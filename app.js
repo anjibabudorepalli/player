@@ -29,8 +29,20 @@ module.exports = app;
 
 app.get("/players/", async (request, response) => {
   const getPlayers = `select * from cricket_team;`;
-  const playerArray = await db.all(getPlayers);
-  response.send(playerArray);
+  const dbObject1 = await db.all(getPlayers);
+  const convertDbObjectToResponseObject = (dbObject) => {
+    let k = {
+      playerId: dbObject.playerId,
+      playerName: dbObject.player_name,
+      jerseyNumber: dbObject.jersey_number,
+      role: dbObject.role,
+    };
+    return k;
+  };
+
+  response.send(
+    dbObject1.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 
 ///POST Players
